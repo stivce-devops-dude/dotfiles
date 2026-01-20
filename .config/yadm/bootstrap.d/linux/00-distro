@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Repo root is set by yadm bootstrap
+# shellcheck disable=SC2154
+REPO_ROOT="${REPO_ROOT:?REPO_ROOT not set}"
+
+if [[ ! -r /etc/os-release ]]; then
+  echo "No /etc/os-release found, skipping distro bootstrap"
+  return 0
+fi
+
+# Load distro info
+. /etc/os-release
+
+run_steps() {
+  local dir="$1"
+  [[ -d "$dir" ]] || return 0
+
+  for step in "$dir"/*; do
+    [[ -f "$step" ]] || continue
+    echo "--> $(basename "$dir")/$(basename "$step")"
+    # shellcheck disable=SC1090
+    source "$step"
+  done
+}
+
+case "$ID" in
+  ubuntu)
+    run_steps "$REPO_ROOT/bootstrap.d/ubuntu"
+    ;;
+  arch)
+    run_steps "$REPO_ROOT/bootstrap.d/arch"
+    ;;
+  *)
+    echo "Unknown Linux distro: $ID (skipping distro-specific bootstrap)"
+    ;;
+esac
+

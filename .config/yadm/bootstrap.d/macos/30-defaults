@@ -1,0 +1,98 @@
+#!/usr/bin/env sh
+set -e
+
+echo "==> Configuring Dock behavior"
+
+# Dock position
+defaults write com.apple.dock orientation -string left
+
+# Hide Dock with no delay and no animation
+defaults write com.apple.dock autohide -bool true
+defaults write com.apple.dock autohide-delay -float 0
+defaults write com.apple.dock autohide-time-modifier -float 0
+
+# Optional extra: don't animate app launch from Dock
+defaults write com.apple.dock launchanim -bool false
+
+# Remove all default Dock items
+defaults write com.apple.dock persistent-apps -array
+defaults write com.apple.dock persistent-others -array
+
+echo "==> Hiding the menu bar"
+
+# Auto-hide the menu bar
+defaults write NSGlobalDomain _HIHideMenuBar -bool true
+
+# Reduce Motion is an Accessibility setting and is often protected by macOS privacy controls.
+# Make it best-effort so the script never fails here.
+
+echo "==> Adding Dock applications"
+
+# Arc
+defaults write com.apple.dock persistent-apps -array-add "$(cat <<'EOF'
+<dict>
+  <key>tile-data</key>
+  <dict>
+    <key>file-data</key>
+    <dict>
+      <key>_CFURLString</key>
+      <string>/Applications/Arc.app</string>
+      <key>_CFURLStringType</key>
+      <integer>0</integer>
+    </dict>
+  </dict>
+</dict>
+EOF
+)"
+
+# Safari
+defaults write com.apple.dock persistent-apps -array-add "$(cat <<'EOF'
+<dict>
+  <key>tile-data</key>
+  <dict>
+    <key>file-data</key>
+    <dict>
+      <key>_CFURLString</key>
+      <string>/Applications/Safari.app</string>
+      <key>_CFURLStringType</key>
+      <integer>0</integer>
+    </dict>
+  </dict>
+</dict>
+EOF
+)"
+
+echo "==> Adding Downloads stack to Dock"
+
+# Downloads stack
+defaults write com.apple.dock persistent-others -array-add "$(cat <<EOF
+<dict>
+  <key>tile-data</key>
+  <dict>
+    <key>arrangement</key>
+    <integer>2</integer>
+    <key>displayas</key>
+    <integer>1</integer>
+    <key>showas</key>
+    <integer>1</integer>
+    <key>file-data</key>
+    <dict>
+      <key>_CFURLString</key>
+      <string>file://${HOME}/Downloads</string>
+      <key>_CFURLStringType</key>
+      <integer>15</integer>
+    </dict>
+  </dict>
+  <key>tile-type</key>
+  <string>directory-tile</string>
+</dict>
+EOF
+)"
+
+echo "==> Restarting UI services"
+
+killall Dock || true
+killall Finder || true
+killall SystemUIServer || true
+
+echo "==> macOS defaults applied successfully."

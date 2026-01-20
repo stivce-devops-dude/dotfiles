@@ -1,0 +1,8 @@
+# lib/os
+case "$(uname -s)" in
+  Darwin) OS="macos" ;;
+  Linux)  OS="linux" ;;
+  *)      OS="unknown" ;;
+esac
+export OS
+

@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s nullglob
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Source helpers
+for lib in "$REPO_ROOT/lib/"*; do
+  [[ -f "$lib" ]] || continue
+  # shellcheck disable=SC1090
+  source "$lib"
+done
+
+: "${OS:=unknown}"
+
+echo "==> yadm bootstrap starting on $OS"
+
+OS_DIR="$REPO_ROOT/bootstrap.d/$OS"
+
+if [[ -d "$OS_DIR" ]]; then
+  for step in "$OS_DIR/"*; do
+    [[ -f "$step" ]] || continue
+    echo "--> $(basename "$step")"
+    # shellcheck disable=SC1090
+    source "$step"
+  done
+else
+  echo "!! no bootstrap steps for OS=$OS"
+fi
+
+echo "==> bootstrap done"

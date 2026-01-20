@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "=== macOS Setup Script ==="
+
+# Ensure running on macOS
+if [[ "$(uname)" != "Darwin" ]]; then
+  echo "This script must be run on macOS."
+  exit 1
+fi
+
+# Request sudo upfront
+if [[ $EUID -ne 0 ]]; then
+  echo "Requesting sudo access..."
+  sudo -v
+fi
+
+###############################################################################
+# Install Xcode Command Line Tools
+###############################################################################
+echo "Checking Xcode Command Line Tools..."
+
+if ! xcode-select -p &>/dev/null; then
+  echo "Installing Xcode Command Line Tools..."
+  xcode-select --install
+
+  echo "Waiting for Xcode Command Line Tools installation to complete..."
+  until xcode-select -p &>/dev/null; do
+    sleep 10
+  done
+else
+  echo "Xcode Command Line Tools already installed."
+fi
+
+###############################################################################
+# Install Rosetta 2 (Apple Silicon only)
+###############################################################################
+if [[ "$(uname -m)" == "arm64" ]]; then
+  echo "Apple Silicon detected. Checking Rosetta 2..."
+
+  if ! pkgutil --pkg-info=com.apple.pkg.RosettaUpdateAuto &>/dev/null; then
+    echo "Installing Rosetta 2..."
+    softwareupdate --install-rosetta --agree-to-license
+  else
+    echo "Rosetta 2 already installed."
+  fi
+else
+  echo "Intel Mac detected. Skipping Rosetta 2."
+fi
+
+###############################################################################
+# Update macOS
+###############################################################################
+echo "Checking for macOS updates..."
+softwareupdate --list || true
+
+echo "Installing all available macOS updates..."
+softwareupdate --all --install
+
+###############################################################################
+# Done
+###############################################################################
+echo "macOS setup complete."

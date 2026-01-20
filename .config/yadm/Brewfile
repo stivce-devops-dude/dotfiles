@@ -1,0 +1,4 @@
+brew "git"
+brew "tree"
+brew "yadm"
+cask "kitty"
