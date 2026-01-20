@@ -66,10 +66,6 @@ Never commit secrets unencrypted.
 
 ---
 
-## ❤️ Notes
-
-These dotfiles are opinionated and personal. Feel free to fork or adapt.
-
 ---
 
 ## 📜 License
