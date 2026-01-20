@@ -65,9 +65,3 @@ Use `yadm encrypt` / `yadm decrypt` for sensitive data.
 Never commit secrets unencrypted.
 
 ---
-
----
-
-## 📜 License
-
-Provided as-is. Add a license if you plan to share publicly.
