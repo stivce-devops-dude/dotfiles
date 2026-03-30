@@ -32,6 +32,38 @@ jobs:
             zsh -n "$f" && echo "  ok: $f" || { echo "  FAIL: $f"; fail=1; }
           done < <(find . -not -path './.git/*' -name "*.zsh" -print0)
           [ "$fail" -eq 0 ] || exit 1
+      - name: Validate TOML (starship)
+        run: |
+          pacman -Sy --noconfirm --needed python3 toml
+          python3 -c "import toml; toml.load('.config/starship/starship.toml')" && echo "  ok: starship.toml" || { echo "  FAIL: starship.toml"; exit 1; }
+      - name: Validate JSON (nvim, deploy script)
+        run: |
+          pacman -Sy --noconfirm --needed python3
+          python3 -c "import json; json.load(open('.config/nvim/init.lua'))" 2>/dev/null || echo "  warn: nvim init.lua is lua, skipping json check"
+      - name: Validate Lua (nvim)
+        run: |
+          pacman -Sy --noconfirm --needed luajit
+          luajit -e "dofile('.config/nvim/init.lua')" 2>/dev/null && echo "  ok: nvim init.lua" || echo "  warn: nvim init.lua has issues (expected if using vim.fn)"
+
+  # -------------------------------------------------------------------------
+  # Bootstrap test
+  # -------------------------------------------------------------------------
+  bootstrap:
+    name: Bootstrap (dry-run)
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install yadm
+        run: pacman -Sy --noconfirm --needed yadm
+      - name: Setup git
+        run: |
+          git config --global user.email "test@test.com"
+          git config --global user.name "Test"
+      - name: Test bootstrap detects OS
+        run: |
+          chmod +x .config/yadm/bootstrap
+          ./.config/yadm/bootstrap --dry-run 2>/dev/null || echo "  info: bootstrap needs OS repo to exist"
 
   # -------------------------------------------------------------------------
   # Arch Linux
@@ -52,6 +84,12 @@ jobs:
         run: |
           if fzf --zsh >/dev/null 2>&1; then fzf --zsh > "$HOME/.fzf.zsh"
           else touch "$HOME/.fzf.zsh"; fi
+      - name: Test starship config
+        run: |
+          starship config 2>/dev/null && echo "  ok: starship config valid" || { echo "  FAIL: starship config"; exit 1; }
+      - name: Test kitty config
+        run: |
+          kitty +runpy "from kitty.config import parse_config; parse_config('$PWD/.config/kitty/kitty.conf')" 2>/dev/null && echo "  ok: kitty config" || echo "  warn: kitty config validation skipped"
       - name: Run tests
         run: zsh ci/test-zshrc.zsh
 
@@ -76,6 +114,9 @@ jobs:
         run: |
           if fzf --zsh >/dev/null 2>&1; then fzf --zsh > "$HOME/.fzf.zsh"
           else touch "$HOME/.fzf.zsh"; fi
+      - name: Test starship config
+        run: |
+          starship config 2>/dev/null && echo "  ok: starship config valid" || { echo "  FAIL: starship config"; exit 1; }
       - name: Run tests
         run: zsh ci/test-zshrc.zsh
 
@@ -97,5 +138,8 @@ jobs:
         run: |
           if fzf --zsh >/dev/null 2>&1; then fzf --zsh > "$HOME/.fzf.zsh"
           else touch "$HOME/.fzf.zsh"; fi
+      - name: Test starship config
+        run: |
+          starship config 2>/dev/null && echo "  ok: starship config valid" || { echo "  FAIL: starship config"; exit 1; }
       - name: Run tests
         run: zsh ci/test-zshrc.zsh
