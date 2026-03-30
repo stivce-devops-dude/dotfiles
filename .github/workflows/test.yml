@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install deps
-        run: pacman -Sy --noconfirm --needed bash zsh
+        run: pacman -Sy --noconfirm --needed bash zsh git
       - name: bash -n bootstrap scripts
         run: |
           fail=0
