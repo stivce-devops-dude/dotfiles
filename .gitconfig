@@ -1,0 +1,43 @@
+[user]
+	name = stivce-devops-dude
+	email = stivce96+github@gmail.com
+
+[core]
+  editor = nvim
+
+[alias]
+  st = status
+  ci = commit
+  co = checkout
+  br = branch
+  lg = log --graph --oneline --decorate --all
+  amend = commit --amend --no-edit
+  last = log -1 HEAD
+  unstage = reset HEAD --
+  hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+
+[push]
+  default = simple
+
+[pull]
+  rebase = false
+
+[init]
+  defaultBranch = main
+
+[diff]
+  tool = nvimdiff
+
+[merge]
+  tool = nvimdiff
+  conflictstyle = diff3
+
+[credential]
+	helper = cache
+
+[rerere]
+  enabled = true
+
+[delta]
+  features = side-by-side line-numbers decorations
+  whitespace-error-style = 22 reverse

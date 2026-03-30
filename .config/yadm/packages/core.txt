@@ -1,0 +1,19 @@
+# Core cross-platform CLI tools
+# Installed on all platforms (Arch via pacman, macOS via brew)
+# Package names must be valid on both pacman and brew
+
+git
+tree
+fzf
+bat
+eza
+ripgrep
+fd
+ansible
+neovim
+tmux
+jq
+starship
+fastfetch
+git-delta
+btop
