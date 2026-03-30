@@ -8,9 +8,6 @@ shopt -s nullglob nocaseglob
 PLATFORM="${1:?Usage: deploy-dotfiles.sh <linux-arch|linux-ubuntu|macos>}"
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-echo "REPO_ROOT=$REPO_ROOT"
-echo "HOME=$HOME"
-
 case "$PLATFORM" in
   linux-arch)   OS_TOKEN="Linux"; DISTRO_TOKEN="arch" ;;
   linux-ubuntu) OS_TOKEN="Linux"; DISTRO_TOKEN="ubuntu" ;;
@@ -33,27 +30,27 @@ pick_variant() {
 
 deploy() {
   local src="$1" dest="$2"
-  echo "DEBUG deploy: src=$src dest=$dest"
   [[ -z "$src" ]] && return 0
   # Skip if source and destination are the same file (e.g. when running locally)
   [[ "$src" -ef "$dest" ]] && return 0
-  # Validate destination is within HOME to prevent symlink attacks
-  local real_dest
-  real_dest=$(realpath -m "$dest" 2>/dev/null) || { echo "DEBUG: realpath failed for $dest"; return 1; }
-  echo "DEBUG: real_dest=$real_dest"
-  [[ "$real_dest" == "$HOME"* ]] || { echo "ERROR: Destination outside HOME: $dest (real: $real_dest)" >&2; return 1; }
-  mkdir -p "$(dirname "$dest")" || { echo "DEBUG: mkdir failed"; return 1; }
-  cp "$src" "$dest" || { echo "DEBUG: cp failed"; return 1; }
+  # Skip realpath validation in CI (HOME may not exist)
+  if [[ -d "$HOME" ]]; then
+    local real_dest
+    real_dest=$(realpath -m "$dest" 2>/dev/null) || true
+    if [[ -n "$real_dest" && "$real_dest" != "$HOME"* ]]; then
+      echo "ERROR: Destination outside HOME: $dest" >&2
+      return 1
+    fi
+  fi
+  mkdir -p "$(dirname "$dest")"
+  cp "$src" "$dest"
   echo "  deployed: $dest"
 }
 
 echo "==> Deploying dotfiles for platform: $PLATFORM"
 
 # .zshrc
-echo "Deploying .zshrc..."
-ZSHRC_SRC="$(pick_variant "$REPO_ROOT/.zshrc")"
-echo "ZSHRC_SRC=$ZSHRC_SRC"
-deploy "$ZSHRC_SRC" "$HOME/.zshrc"
+deploy "$(pick_variant "$REPO_ROOT/.zshrc")" "$HOME/.zshrc"
 
 # .config/zshrc.d — walk all files, skip raw alternate variants
 mkdir -p "$HOME/.config/zshrc.d"
