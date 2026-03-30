@@ -1,0 +1,63 @@
+#!/bin/bash
+set -euo pipefail
+
+detect_os() {
+    case "$(uname -s)" in
+        Linux*)
+            if [ -f /etc/arch-release ]; then
+                echo "arch"
+            elif [ -f /etc/debian_version ]; then
+                echo "debian"
+            else
+                echo "linux"
+            fi
+            ;;
+        Darwin*)
+            echo "macos"
+            ;;
+        *)
+            echo "unknown"
+            ;;
+    esac
+}
+
+clone_os_repo() {
+    local os="$1"
+    local dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+    local os_repo=""
+
+    case "$os" in
+        arch)
+            os_repo="git@github.com:stivce-devops-dude/dotfiles-arch.git"
+            ;;
+        macos)
+            os_repo="git@github.com:stivce-devops-dude/dotfiles-macos.git"
+            ;;
+        *)
+            echo "Unknown OS, skipping OS-specific repo clone"
+            return 0
+            ;;
+    esac
+
+    local target_dir="${dotfiles_dir}-${os}"
+
+    if [ -d "$target_dir" ]; then
+        echo "OS-specific repo already exists at $target_dir"
+    else
+        echo "Cloning $os specific repo to $target_dir..."
+        git clone "$os_repo" "$target_dir"
+    fi
+
+    echo "Applying OS-specific configs from $target_dir..."
+    yadm alt --global "$target_dir/"
+}
+
+main() {
+    local os
+    os=$(detect_os)
+    echo "Detected OS: $os"
+
+    clone_os_repo "$os"
+}
+
+main "$@"
