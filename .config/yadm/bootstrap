@@ -1,6 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
+# Source common libs
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logging"
+source "$SCRIPT_DIR/lib/os"
+
 detect_os() {
     case "$(uname -s)" in
         Linux*)
