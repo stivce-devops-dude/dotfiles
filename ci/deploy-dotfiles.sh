@@ -2,7 +2,7 @@
 # deploy-dotfiles.sh — simulates yadm alt for CI environments
 # Usage: deploy-dotfiles.sh <platform>
 # platform: linux-arch | linux-ubuntu | macos
-set -exuo pipefail
+set -euo pipefail
 shopt -s nullglob nocaseglob
 
 PLATFORM="${1:?Usage: deploy-dotfiles.sh <linux-arch|linux-ubuntu|macos>}"
