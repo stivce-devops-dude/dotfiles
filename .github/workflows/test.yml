@@ -51,7 +51,7 @@ jobs:
           [ "$fail" -eq 0 ] || exit 1
       - name: Validate gitconfig
         run: |
-          if git config -f .gitconfig --list &>/dev/null; then
+          if git config -f "$PWD/.gitconfig" --list &>/dev/null; then
             echo "  ok: gitconfig valid"
           else
             echo "  FAIL: gitconfig invalid"
