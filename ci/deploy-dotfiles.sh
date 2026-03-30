@@ -33,15 +33,17 @@ pick_variant() {
 
 deploy() {
   local src="$1" dest="$2"
+  echo "DEBUG deploy: src=$src dest=$dest"
   [[ -z "$src" ]] && return 0
   # Skip if source and destination are the same file (e.g. when running locally)
   [[ "$src" -ef "$dest" ]] && return 0
   # Validate destination is within HOME to prevent symlink attacks
   local real_dest
-  real_dest=$(realpath -m "$dest" 2>/dev/null) || return 1
-  [[ "$real_dest" == "$HOME"* ]] || { echo "ERROR: Destination outside HOME: $dest" >&2; return 1; }
-  mkdir -p "$(dirname "$dest")"
-  cp "$src" "$dest"
+  real_dest=$(realpath -m "$dest" 2>/dev/null) || { echo "DEBUG: realpath failed for $dest"; return 1; }
+  echo "DEBUG: real_dest=$real_dest"
+  [[ "$real_dest" == "$HOME"* ]] || { echo "ERROR: Destination outside HOME: $dest (real: $real_dest)" >&2; return 1; }
+  mkdir -p "$(dirname "$dest")" || { echo "DEBUG: mkdir failed"; return 1; }
+  cp "$src" "$dest" || { echo "DEBUG: cp failed"; return 1; }
   echo "  deployed: $dest"
 }
 
