@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-[[ "${DESKTOP_SESSION:-}" == *gnome* ]] || [[ "${XDG_CURRENT_DESKTOP:-}" == *gnome* ]] || [[ -n "${GNOME_DESKTOP_SESSION_ID:-}" ]] || return 0
-
-gsettings set org.gnome.nautilus.preferences default-folder-viewer 'list-view' 2>/dev/null || true
-gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
