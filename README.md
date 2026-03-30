@@ -1,10 +1,13 @@
 # dotfiles
 
-[![Test Arch](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test.yml)
-[![Test Ubuntu](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test.yml)
-[![Test macOS](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test.yml)
-
 General dotfiles managed with [yadm](https://yadm.io/). Supports Arch Linux and macOS.
+
+| CI Job | Badge |
+|--------|-------|
+| Lint | [![Lint](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test.yml/badge.svg?job=lint)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test.yml) |
+| Test Arch | [![Test Arch](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test.yml/badge.svg?job=test-arch)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test.yml) |
+| Test Ubuntu | [![Test Ubuntu](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test.yml/badge.svg?job=test-ubuntu)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test.yml) |
+| Test macOS | [![Test macOS](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test.yml/badge.svg?job=test-macos)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test.yml) |
 
 ## Setup
 
@@ -33,10 +36,12 @@ The bootstrap script automatically detects your OS and clones the appropriate OS
 
 ## CI Tests
 
-- **Lint**: bash/zsh syntax on all shell scripts
-- **Validate**: TOML (starship), core packages in pacman/brew, gitconfig
-- **Deploy**: Tests config deployment on Arch, Ubuntu, macOS
-- **Integration**: zsh config loading, starship, starship config validation
+| Job | Description |
+|-----|-------------|
+| Lint | bash/zsh syntax validation on all shell scripts |
+| Validate | TOML (starship config), packages in pacman/brew, gitconfig |
+| Deploy | Tests config deployment on each OS |
+| Integration | zsh config loading, starship, starship config |
 
 ## Adding New Configs
 
