@@ -3,6 +3,7 @@
 # Usage: deploy-dotfiles.sh <platform>
 # platform: linux-arch | linux-ubuntu | macos
 set -euo pipefail
+shopt -s nullglob nocaseglob
 
 PLATFORM="${1:?Usage: deploy-dotfiles.sh <linux-arch|linux-ubuntu|macos>}"
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
