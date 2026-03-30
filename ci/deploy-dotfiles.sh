@@ -8,6 +8,9 @@ shopt -s nullglob nocaseglob
 PLATFORM="${1:?Usage: deploy-dotfiles.sh <linux-arch|linux-ubuntu|macos>}"
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
+echo "REPO_ROOT=$REPO_ROOT"
+echo "HOME=$HOME"
+
 case "$PLATFORM" in
   linux-arch)   OS_TOKEN="Linux"; DISTRO_TOKEN="arch" ;;
   linux-ubuntu) OS_TOKEN="Linux"; DISTRO_TOKEN="ubuntu" ;;
@@ -45,7 +48,10 @@ deploy() {
 echo "==> Deploying dotfiles for platform: $PLATFORM"
 
 # .zshrc
-deploy "$(pick_variant "$REPO_ROOT/.zshrc")" "$HOME/.zshrc"
+echo "Deploying .zshrc..."
+ZSHRC_SRC="$(pick_variant "$REPO_ROOT/.zshrc")"
+echo "ZSHRC_SRC=$ZSHRC_SRC"
+deploy "$ZSHRC_SRC" "$HOME/.zshrc"
 
 # .config/zshrc.d — walk all files, skip raw alternate variants
 mkdir -p "$HOME/.config/zshrc.d"
