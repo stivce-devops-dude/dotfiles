@@ -36,14 +36,27 @@ jobs:
         run: |
           pacman -Sy --noconfirm --needed python3 python-toml
           python3 -c "import toml; toml.load('.config/starship/starship.toml')" && echo "  ok: starship.toml"
-      - name: Validate JSON (nvim, deploy script)
+      - name: Validate packages exist in pacman
         run: |
-          pacman -Sy --noconfirm --needed python3
-          python3 -c "import json; json.load(open('.config/nvim/init.lua'))" 2>/dev/null || echo "  warn: nvim init.lua is lua, skipping json check"
-      - name: Validate Lua (nvim)
+          fail=0
+          while IFS= read -r pkg; do
+            [[ -z "$pkg" || "$pkg" == \#* ]] && continue
+            if pacman -Si "$pkg" &>/dev/null; then
+              echo "  ok: $pkg in pacman"
+            else
+              echo "  FAIL: $pkg NOT in pacman"
+              fail=1
+            fi
+          done < .config/yadm/packages/core.txt
+          [ "$fail" -eq 0 ] || exit 1
+      - name: Validate gitconfig
         run: |
-          pacman -Sy --noconfirm --needed luajit
-          luajit -e "dofile('.config/nvim/init.lua')" 2>/dev/null && echo "  ok: nvim init.lua" || echo "  warn: nvim init.lua has issues (expected if using vim.fn)"
+          if git config -f .gitconfig --list &>/dev/null; then
+            echo "  ok: gitconfig valid"
+          else
+            echo "  FAIL: gitconfig invalid"
+            exit 1
+          fi
 
   # -------------------------------------------------------------------------
   # Bootstrap test
@@ -87,6 +100,17 @@ jobs:
       - name: Test starship config
         run: |
           starship help >/dev/null 2>&1 && echo "  ok: starship binary works" || { echo "  FAIL: starship"; exit 1; }
+      - name: Validate core packages installable
+        run: |
+          fail=0
+          while IFS= read -r pkg; do
+            [[ -z "$pkg" || "$pkg" == \#* ]] && continue
+            if pacman -Si "$pkg" &>/dev/null; then
+              echo "  ok: $pkg available"
+            else
+              echo "  WARN: $pkg not in pacman (may be AUR)"
+            fi
+          done < .config/yadm/packages/core.txt
       - name: Test kitty config
         run: |
           kitty +runpy "from kitty.config import parse_config; parse_config('$PWD/.config/kitty/kitty.conf')" 2>/dev/null && echo "  ok: kitty config" || echo "  warn: kitty config validation skipped"
@@ -141,5 +165,15 @@ jobs:
       - name: Test starship config
         run: |
           starship help >/dev/null 2>&1 && echo "  ok: starship binary works" || { echo "  FAIL: starship"; exit 1; }
+      - name: Validate core packages installable via brew
+        run: |
+          while IFS= read -r pkg; do
+            [[ -z "$pkg" || "$pkg" == \#* ]] && continue
+            if brew info "$pkg" &>/dev/null; then
+              echo "  ok: $pkg available"
+            else
+              echo "  WARN: $pkg not in brew"
+            fi
+          done < .config/yadm/packages/core.txt
       - name: Run tests
         run: zsh ci/test-zshrc.zsh
