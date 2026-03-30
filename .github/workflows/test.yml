@@ -34,8 +34,7 @@ jobs:
           [ "$fail" -eq 0 ] || exit 1
       - name: Validate TOML (starship)
         run: |
-          pacman -Sy --noconfirm --needed python3 python-pip
-          pip install --quiet toml
+          pacman -Sy --noconfirm --needed python3 python-toml
           python3 -c "import toml; toml.load('.config/starship/starship.toml')" && echo "  ok: starship.toml"
       - name: Validate JSON (nvim, deploy script)
         run: |
