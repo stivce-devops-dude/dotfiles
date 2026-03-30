@@ -10,6 +10,7 @@ SAVEHIST=10000
 
 # ----- XDG -----
 export XDG_CONFIG_HOME="$HOME/.config"
+export TERM=xterm-256color
 
 # ----- Completion -----
 autoload -Uz compinit
