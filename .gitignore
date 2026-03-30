@@ -1,14 +1,11 @@
 .histfile
 .zsh_history
-.config/hypr/colors.conf
 .local/share/recently-used.xbel
 .local/share/nvim/.netrwhist
 .claude/
 .cache/
 .local/share/gvfs-metadata/
-.local/share/hyprland/
 .local/share/mime/
-.local/share/nwg-look/
 .local/state/
 .config/gtk-3.0/bookmarks
 .config/gtk-4.0/thumbnail.png
