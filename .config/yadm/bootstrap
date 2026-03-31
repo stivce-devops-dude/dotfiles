@@ -39,7 +39,7 @@ clone_os_repo() {
             branch="${DOTFILES_BRANCH:-minimal}"
             ;;
         macos)
-            os_repo="https://github.com/stivce-devops-dude/dotfiles-macos.git"
+            os_repo="https://github.com/stivce-devops-dude/dotfiles-mac.git"
             branch="${DOTFILES_BRANCH:-main}"
             ;;
         *)
