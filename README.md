@@ -6,12 +6,12 @@ General dotfiles managed with [yadm](https://yadm.io/). Supports Arch Linux, Ubu
 
 | CI Job | Description |
 |--------|-------------|
-| **Lint** — bash/zsh syntax + shellcheck | |
-| **Config Validation** — verify TOML, packages | |
-| **Bootstrap** — dry-run bootstrap test | |
-| **Test Arch** — deploy & integration | |
-| **Test Ubuntu** — deploy & integration | |
-| **Test macOS** — deploy & integration | |
+| **Lint** — bash/zsh syntax + shellcheck | [![Lint](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/lint.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/lint.yml) |
+| **Config Validation** — verify TOML, packages | [![Config Validation](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/config-validation.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/config-validation.yml) |
+| **Bootstrap** — dry-run bootstrap test | [![Bootstrap](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/bootstrap.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/bootstrap.yml) |
+| **Test Arch** — deploy & integration | [![Test Arch](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-arch.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-arch.yml) |
+| **Test Ubuntu** — deploy & integration | [![Test Ubuntu](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-ubuntu.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-ubuntu.yml) |
+| **Test macOS** — deploy & integration | [![Test macOS](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-macos.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-macos.yml) |
 | **Package Availability** — verify packages in pacman/brew | |
 
 ## Setup
