@@ -66,7 +66,9 @@ clone_os_repo() {
     fi
 
     echo "Applying OS-specific configs from $target_dir..."
+    echo "  Running: yadm alt --global $target_dir/"
     yadm alt --global "$target_dir/"
+    echo "  yadm alt done"
 
     # Copy root-level files (like .Brewfile, .zshrc) to home
     if [ -d "$target_dir" ]; then
