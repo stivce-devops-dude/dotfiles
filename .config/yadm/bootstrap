@@ -68,6 +68,14 @@ clone_os_repo() {
     echo "Applying OS-specific configs from $target_dir..."
     yadm alt --global "$target_dir/"
 
+    # Copy root-level files (like .Brewfile, .zshrc) to home
+    if [ -d "$target_dir" ]; then
+        echo "Copying additional OS-specific files..."
+        for f in "$target_dir"/.Brewfile "$target_dir"/.zshrc "$target_dir"/.gitconfig; do
+            [ -f "$f" ] && cp "$f" "$HOME/$(basename "$f")"
+        done
+    fi
+
     # Run OS-specific bootstrap if available
     if [ -f "$target_dir/.config/yadm/bootstrap" ]; then
         echo "Running OS-specific bootstrap..."
