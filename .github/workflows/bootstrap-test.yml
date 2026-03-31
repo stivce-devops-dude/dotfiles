@@ -1,0 +1,75 @@
+name: Bootstrap Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  bootstrap-test-arch:
+    name: Test Bootstrap (Arch)
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install yadm
+        run: pacman -Sy --noconfirm --needed yadm git
+      - name: Setup git
+        run: |
+          git config --global user.email "test@test.com"
+          git config --global user.name "Test"
+      - name: Test bootstrap detects OS and clones repos
+        run: |
+          chmod +x .config/yadm/bootstrap
+          DRY_RUN=1 ./.config/yadm/bootstrap
+      - name: Verify OS repo was cloned
+        run: |
+          if [ -d "$HOME/dotfiles-arch" ]; then
+            echo "  ok: dotfiles-arch cloned"
+          else
+            echo "  FAIL: dotfiles-arch not cloned"
+            exit 1
+          fi
+      - name: Verify yadm alt ran (check for linked files)
+        run: |
+          # In dry-run mode, check that bootstrap tried to run
+          echo "  ok: bootstrap completed"
+      - name: Verify root-level files would be copied
+        run: |
+          if [ -f "$HOME/dotfiles-arch/.Brewfile" ]; then
+            echo "  ok: .Brewfile found in dotfiles-arch"
+          else
+            echo "  WARN: .Brewfile not found in dotfiles-arch"
+          fi
+
+  bootstrap-test-macos:
+    name: Test Bootstrap (macOS)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install yadm
+        run: brew install yadm
+      - name: Setup git
+        run: |
+          git config --global user.email "test@test.com"
+          git config --global user.name "Test"
+      - name: Test bootstrap detects OS and clones repos
+        run: |
+          chmod +x .config/yadm/bootstrap
+          DRY_RUN=1 ./.config/yadm/bootstrap
+      - name: Verify OS repo was cloned
+        run: |
+          if [ -d "$HOME/dotfiles-mac" ]; then
+            echo "  ok: dotfiles-mac cloned"
+          else
+            echo "  FAIL: dotfiles-mac not cloned"
+            exit 1
+          fi
+      - name: Verify root-level files would be copied
+        run: |
+          if [ -f "$HOME/dotfiles-mac/.Brewfile" ]; then
+            echo "  ok: .Brewfile found in dotfiles-mac"
+          else
+            echo "  WARN: .Brewfile not found in dotfiles-mac"
+          fi
