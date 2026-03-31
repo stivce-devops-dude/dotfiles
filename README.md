@@ -22,6 +22,23 @@ yadm bootstrap
 
 The bootstrap script automatically detects your OS and clones the appropriate OS-specific repo.
 
+## Branch Usage
+
+For Arch Linux, you can select which branch to use:
+
+| Branch | Description |
+|--------|-------------|
+| `gaming` | Full setup with gaming packages (default) |
+| `minimal` | Base Arch config without gaming |
+
+```bash
+# Default (gaming)
+yadm bootstrap
+
+# Minimal (no gaming)
+DOTFILES_BRANCH=minimal yadm bootstrap
+```
+
 ## What's Included
 
 - **Shell**: zsh config (`.zshrc`, `.config/zshrc.d/`)
