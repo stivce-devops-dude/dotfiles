@@ -88,6 +88,7 @@ clone_os_repo() {
     # Copy root-level files (like .Brewfile, .zshrc) to home
     if [ -d "$target_dir" ]; then
         echo "Copying additional OS-specific files..."
+        sudo -v 2>/dev/null || true
         if [ "$DRY_RUN" = "1" ]; then
             [ -f "$target_dir/.Brewfile" ] && echo "  [DRY-RUN] Would copy .Brewfile"
             [ -f "$target_dir/.zshrc" ] && echo "  [DRY-RUN] Would copy .zshrc"
