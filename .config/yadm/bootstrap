@@ -30,15 +30,17 @@ clone_os_repo() {
     local os="$1"
     local dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
     local os_repo=""
-    local branch="${DOTFILES_BRANCH:-minimal}"
+    local branch=""
     local include_gaming="${DOTFILES_INCLUDE_GAMING:-0}"
 
     case "$os" in
         arch)
             os_repo="https://github.com/stivce-devops-dude/dotfiles-arch.git"
+            branch="${DOTFILES_BRANCH:-minimal}"
             ;;
         macos)
             os_repo="https://github.com/stivce-devops-dude/dotfiles-macos.git"
+            branch="${DOTFILES_BRANCH:-main}"
             ;;
         *)
             echo "Unknown OS, skipping OS-specific repo clone"
@@ -71,7 +73,10 @@ main() {
     local os
     os=$(detect_os)
     echo "Detected OS: $os"
-    echo "Branch: ${DOTFILES_BRANCH:-minimal}, Gaming: ${DOTFILES_INCLUDE_GAMING:-0}"
+    
+    local default_branch="main"
+    [ "$os" = "arch" ] && default_branch="minimal"
+    echo "Branch: ${DOTFILES_BRANCH:-$default_branch}, Gaming: ${DOTFILES_INCLUDE_GAMING:-0}"
 
     clone_os_repo "$os"
 }
