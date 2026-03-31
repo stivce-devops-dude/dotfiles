@@ -2,6 +2,7 @@
 set -euo pipefail
 
 DRY_RUN="${DRY_RUN:-0}"
+SKIP_BOOTSTRAP="${SKIP_BOOTSTRAP:-0}"
 
 # Source common libs
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -101,10 +102,10 @@ clone_os_repo() {
     # Run OS-specific bootstrap if available
     local os_bootstrap="$target_dir/.config/yadm/bootstrap"
     if [ -f "$os_bootstrap" ]; then
-        echo "Running OS-specific bootstrap from $os_bootstrap..."
-        if [ "$DRY_RUN" = "1" ]; then
-            echo "  [DRY-RUN] Would run: bash $os_bootstrap"
+        if [ "$SKIP_BOOTSTRAP" = "1" ]; then
+            echo "Skipping OS-specific bootstrap (SKIP_BOOTSTRAP=1)"
         else
+            echo "Running OS-specific bootstrap from $os_bootstrap..."
             bash "$os_bootstrap"
         fi
     else
