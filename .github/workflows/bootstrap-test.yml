@@ -65,15 +65,15 @@ jobs:
           SKIP_BOOTSTRAP=1 ./.config/yadm/bootstrap 2>&1 || true
       - name: Verify OS repo was cloned
         run: |
-          if [ -d "$HOME/dotfiles-mac" ]; then
-            echo "  ok: dotfiles-mac cloned"
+          if [ -d "$HOME/dotfiles-macos" ]; then
+            echo "  ok: dotfiles-macos cloned"
           else
-            echo "  FAIL: dotfiles-mac not cloned"
+            echo "  FAIL: dotfiles-macos not cloned"
             exit 1
           fi
       - name: Verify root-level files exist
         run: |
-          if [ -f "$HOME/dotfiles-mac/.Brewfile" ]; then
+          if [ -f "$HOME/dotfiles-macos/.Brewfile" ]; then
             echo "  ok: .Brewfile found"
           else
             echo "  WARN: .Brewfile not found"
