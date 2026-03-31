@@ -67,6 +67,13 @@ clone_os_repo() {
 
     echo "Applying OS-specific configs from $target_dir..."
     yadm alt --global "$target_dir/"
+
+    # Run OS-specific bootstrap if available
+    if [ -f "$target_dir/.config/yadm/bootstrap" ]; then
+        echo "Running OS-specific bootstrap..."
+        cd "$target_dir"
+        REPO_ROOT="$target_dir" ./.config/yadm/bootstrap
+    fi
 }
 
 main() {
