@@ -50,6 +50,10 @@ clone_os_repo() {
 
     local target_dir="${dotfiles_dir}-${os}"
 
+    # Force HTTPS for GitHub URLs to avoid SSH auth issues with public repos
+    git config --global url."https://github.com/".insteadOf "git@github.com:"
+    git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+
     if [ -d "$target_dir" ]; then
         echo "OS-specific repo already exists at $target_dir"
     else
