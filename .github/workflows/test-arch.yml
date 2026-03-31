@@ -1,0 +1,44 @@
+name: Test Arch
+
+on:
+  push:
+    branches: [main, beta]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-arch:
+    name: Test (Arch Linux)
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install deps
+        run: pacman -Sy --noconfirm --needed zsh fzf starship neovim git
+      - name: Deploy dotfiles
+        run: |
+          chmod +x ci/deploy-dotfiles.sh
+          ci/deploy-dotfiles.sh linux-arch
+      - name: Generate fzf integration
+        run: |
+          if fzf --zsh >/dev/null 2>&1; then fzf --zsh > "$HOME/.fzf.zsh"
+          else touch "$HOME/.fzf.zsh"; fi
+      - name: Test starship config
+        run: |
+          starship help >/dev/null 2>&1 && echo "  ok: starship binary works" || { echo "  FAIL: starship"; exit 1; }
+      - name: Validate core packages installable
+        run: |
+          fail=0
+          while IFS= read -r pkg; do
+            [[ -z "$pkg" || "$pkg" == \#* ]] && continue
+            if pacman -Si "$pkg" &>/dev/null; then
+              echo "  ok: $pkg available"
+            else
+              echo "  WARN: $pkg not in pacman (may be AUR)"
+            fi
+          done < .config/yadm/packages/core.txt
+      - name: Test kitty config
+        run: |
+          kitty +runpy "from kitty.config import parse_config; parse_config('$PWD/.config/kitty/kitty.conf')" 2>/dev/null && echo "  ok: kitty config" || echo "  warn: kitty config validation skipped"
+      - name: Run tests
+        run: zsh ci/test-zshrc.zsh

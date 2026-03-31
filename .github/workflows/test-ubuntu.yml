@@ -1,0 +1,32 @@
+name: Test Ubuntu
+
+on:
+  push:
+    branches: [main, beta]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-ubuntu:
+    name: Test (Ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends zsh fzf git curl neovim ca-certificates
+          curl -fsSL https://starship.rs/install.sh | sh -s -- --yes --bin-dir /usr/local/bin
+      - name: Deploy dotfiles
+        run: |
+          chmod +x ci/deploy-dotfiles.sh
+          ci/deploy-dotfiles.sh linux-ubuntu
+      - name: Generate fzf integration
+        run: |
+          if fzf --zsh >/dev/null 2>&1; then fzf --zsh > "$HOME/.fzf.zsh"
+          else touch "$HOME/.fzf.zsh"; fi
+      - name: Test starship config
+        run: |
+          starship help >/dev/null 2>&1 && echo "  ok: starship binary works" || { echo "  FAIL: starship"; exit 1; }
+      - name: Run tests
+        run: zsh ci/test-zshrc.zsh

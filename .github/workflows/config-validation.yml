@@ -1,0 +1,36 @@
+name: Config Validation
+
+on:
+  push:
+    branches: [main, beta]
+  pull_request:
+    branches: [main]
+
+jobs:
+  config-validation:
+    name: Config Validation
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install deps
+        run: pacman -Sy --noconfirm --needed python3 python-toml git
+      - name: Validate TOML (starship)
+        run: |
+          python3 -c "import toml; toml.load('.config/starship/starship.toml')" && echo "  ok: starship.toml"
+      - name: Validate packages exist in pacman
+        run: |
+          fail=0
+          while IFS= read -r pkg; do
+            [[ -z "$pkg" || "$pkg" == \#* ]] && continue
+            if pacman -Si "$pkg" &>/dev/null; then
+              echo "  ok: $pkg in pacman"
+            else
+              echo "  FAIL: $pkg NOT in pacman"
+              fail=1
+            fi
+          done < .config/yadm/packages/core.txt
+          [ "$fail" -eq 0 ] || exit 1
+      - name: Validate gitconfig
+        run: |
+          git config -f .gitconfig --list && echo "  ok: gitconfig valid" || { echo "  FAIL: gitconfig invalid"; exit 1; }
