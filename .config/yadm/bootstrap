@@ -71,16 +71,18 @@ clone_os_repo() {
     # Copy root-level files (like .Brewfile, .zshrc) to home
     if [ -d "$target_dir" ]; then
         echo "Copying additional OS-specific files..."
-        for f in "$target_dir"/.Brewfile "$target_dir"/.zshrc "$target_dir"/.gitconfig; do
-            [ -f "$f" ] && cp "$f" "$HOME/$(basename "$f")"
-        done
+        cp "$target_dir/.Brewfile" "$HOME/.Brewfile" 2>/dev/null || true
+        cp "$target_dir/.zshrc" "$HOME/.zshrc" 2>/dev/null || true
+        cp "$target_dir/.gitconfig" "$HOME/.gitconfig" 2>/dev/null || true
     fi
 
     # Run OS-specific bootstrap if available
-    if [ -f "$target_dir/.config/yadm/bootstrap" ]; then
-        echo "Running OS-specific bootstrap..."
-        cd "$target_dir"
-        REPO_ROOT="$target_dir" ./.config/yadm/bootstrap
+    local os_bootstrap="$target_dir/.config/yadm/bootstrap"
+    if [ -f "$os_bootstrap" ]; then
+        echo "Running OS-specific bootstrap from $os_bootstrap..."
+        bash "$os_bootstrap"
+    else
+        echo "No OS-specific bootstrap found at $os_bootstrap"
     fi
 }
 
