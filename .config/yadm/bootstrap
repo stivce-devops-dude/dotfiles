@@ -28,7 +28,7 @@ detect_os() {
 
 clone_os_repo() {
     local os="$1"
-    local dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+    local dotfiles_dir="$HOME/dotfiles"
     local os_repo=""
     local branch=""
     local include_gaming="${DOTFILES_INCLUDE_GAMING:-0}"
