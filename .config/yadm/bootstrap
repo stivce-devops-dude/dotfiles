@@ -54,7 +54,7 @@ clone_os_repo() {
         echo "OS-specific repo already exists at $target_dir"
     else
         echo "Cloning $os specific repo (branch: $branch) to $target_dir..."
-        GIT_TERMINAL_PROMPT=0 git clone -b "$branch" --depth 1 "$os_repo" "$target_dir"
+        git clone -b "$branch" --depth 1 "$os_repo" "$target_dir"
     fi
 
     if [ "$include_gaming" = "1" ] && [ "$os" = "arch" ]; then
