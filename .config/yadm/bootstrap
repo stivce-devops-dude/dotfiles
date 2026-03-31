@@ -30,7 +30,8 @@ clone_os_repo() {
     local os="$1"
     local dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
     local os_repo=""
-    local branch="${DOTFILES_BRANCH:-gaming}"
+    local branch="${DOTFILES_BRANCH:-minimal}"
+    local include_gaming="${DOTFILES_INCLUDE_GAMING:-0}"
 
     case "$os" in
         arch)
@@ -54,6 +55,14 @@ clone_os_repo() {
         git clone -b "$branch" "$os_repo" "$target_dir"
     fi
 
+    if [ "$include_gaming" = "1" ] && [ "$os" = "arch" ]; then
+        echo "Applying gaming branch on top..."
+        git -C "$target_dir" fetch origin gaming
+        git -C "$target_dir" checkout gaming -- .
+        git -C "$target_dir" add -A
+        git -C "$target_dir" commit -m "Apply gaming additions" || true
+    fi
+
     echo "Applying OS-specific configs from $target_dir..."
     yadm alt --global "$target_dir/"
 }
@@ -62,7 +71,7 @@ main() {
     local os
     os=$(detect_os)
     echo "Detected OS: $os"
-    echo "Branch: ${DOTFILES_BRANCH:-gaming}"
+    echo "Branch: ${DOTFILES_BRANCH:-minimal}, Gaming: ${DOTFILES_INCLUDE_GAMING:-0}"
 
     clone_os_repo "$os"
 }

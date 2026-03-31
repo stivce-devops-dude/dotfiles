@@ -24,19 +24,19 @@ The bootstrap script automatically detects your OS and clones the appropriate OS
 
 ## Branch Usage
 
-For Arch Linux, you can select which branch to use:
+For Arch Linux, the bootstrap uses `minimal` branch by default, and optionally applies gaming on top:
 
-| Branch | Description |
-|--------|-------------|
-| `gaming` | Full setup with gaming packages (default) |
-| `minimal` | Base Arch config without gaming |
+| Branch/Option | Description |
+|---------------|-------------|
+| `minimal` (default) | Base Arch config (Hyprland, kitty, dev tools) |
+| `DOTFILES_INCLUDE_GAMING=1` | Adds gaming packages on top |
 
 ```bash
-# Default (gaming)
+# Default (minimal - no gaming)
 yadm bootstrap
 
-# Minimal (no gaming)
-DOTFILES_BRANCH=minimal yadm bootstrap
+# With gaming
+DOTFILES_INCLUDE_GAMING=1 yadm bootstrap
 ```
 
 ## What's Included
