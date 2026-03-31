@@ -1,17 +1,18 @@
 # dotfiles
 
-General dotfiles managed with [yadm](https://yadm.io/). Supports Arch Linux and macOS.
+General dotfiles managed with [yadm](https://yadm.io/). Supports Arch Linux, Ubuntu, and macOS.
 
 ## CI Jobs
 
 | CI Job | Description |
 |--------|-------------|
-| **Lint** — bash/zsh syntax validation | [![Lint](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/lint.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/lint.yml) |
-| **Config Validation** — verify packages in pacman, TOML, gitconfig | [![Config Validation](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/config-validation.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/config-validation.yml) |
-| **Bootstrap** — dry-run bootstrap test | [![Bootstrap](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/bootstrap.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/bootstrap.yml) |
-| **Test Arch** — deploy & integration | [![Test Arch](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-arch.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-arch.yml) |
-| **Test Ubuntu** — deploy & integration | [![Test Ubuntu](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-ubuntu.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-ubuntu.yml) |
-| **Test macOS** — deploy & integration | [![Test macOS](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-macos.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-macos.yml) |
+| **Lint** — bash/zsh syntax + shellcheck | |
+| **Config Validation** — verify TOML, packages | |
+| **Bootstrap** — dry-run bootstrap test | |
+| **Test Arch** — deploy & integration | |
+| **Test Ubuntu** — deploy & integration | |
+| **Test macOS** — deploy & integration | |
+| **Package Availability** — verify packages in pacman/brew | |
 
 ## Setup
 
@@ -22,20 +23,19 @@ yadm bootstrap
 
 The bootstrap script automatically detects your OS and clones the appropriate OS-specific repo.
 
-## Branch Usage
+## Branch / Setup Options
 
-For Arch Linux, the bootstrap uses `minimal` branch by default, and optionally applies gaming on top:
-
-| Branch/Option | Description |
-|---------------|-------------|
-| `minimal` (default) | Base Arch config (Hyprland, kitty, dev tools) |
-| `DOTFILES_INCLUDE_GAMING=1` | Adds gaming packages on top |
+| OS | Default | With Gaming |
+|----|---------|-------------|
+| **Arch Linux** | minimal (base only) | `DOTFILES_INCLUDE_GAMING=1` |
+| **Ubuntu** | main | - |
+| **macOS** | main | - |
 
 ```bash
-# Default (minimal - no gaming)
+# Arch Linux - minimal (no gaming)
 yadm bootstrap
 
-# With gaming
+# Arch Linux - with gaming
 DOTFILES_INCLUDE_GAMING=1 yadm bootstrap
 ```
 
@@ -45,15 +45,15 @@ DOTFILES_INCLUDE_GAMING=1 yadm bootstrap
 - **Terminal**: kitty config
 - **Editor**: neovim (`init.lua`)
 - **Prompt**: starship
-- **Yadm**: bootstrap scripts and package lists
+- **Package Lists**: `.config/yadm/packages/core.txt`
 
 ## Bootstrap Scripts
 
 | Script | Description |
 |--------|-------------|
 | `.config/yadm/bootstrap` | Main bootstrap - detects OS and clones OS-specific repos |
-| `.config/yadm/bootstrap.d/common/40-home` | Creates home directories (`Documents`, `Downloads`, `Pictures`, etc.) |
-| `.config/yadm/bootstrap.d/common/50-fzf` | Generates fzf zsh integration (`~/.fzf.zsh`) |
+| `.config/yadm/bootstrap.d/common/40-home` | Creates home directories |
+| `.config/yadm/bootstrap.d/common/50-fzf` | Generates fzf zsh integration |
 
 ## Adding New Configs
 
