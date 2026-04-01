@@ -1,65 +1,39 @@
 # dotfiles
 
-General dotfiles managed with [yadm](https://yadm.io/). Supports Arch Linux, Ubuntu, and macOS.
-
-## CI Jobs
-
-| CI Job | Description |
-|--------|-------------|
-| **Lint** — bash/zsh syntax + shellcheck | [![Lint](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/lint.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/lint.yml) |
-| **Config Validation** — verify TOML, packages | [![Config Validation](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/config-validation.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/config-validation.yml) |
-| **Bootstrap** — dry-run bootstrap test | [![Bootstrap](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/bootstrap.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/bootstrap.yml) |
-| **Bootstrap Test** — test bootstrap (Arch + macOS) | [![Bootstrap Test](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/bootstrap-test.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/bootstrap-test.yml) |
-| **Test Arch** — deploy & integration | [![Test Arch](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-arch.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-arch.yml) |
-| **Test Ubuntu** — deploy & integration | [![Test Ubuntu](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-ubuntu.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-ubuntu.yml) |
-| **Test macOS** — deploy & integration | [![Test macOS](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-macos.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/test-macos.yml) |
-| **Package Availability** — verify packages in pacman/brew | [![Package Availability](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/package-availability.yml/badge.svg)](https://github.com/stivce-devops-dude/dotfiles/actions/workflows/package-availability.yml) |
+Shared dotfiles for macOS and Arch Linux. Managed as a bare git repo.
 
 ## Setup
 
 ```bash
-yadm clone git@github.com:stivce-devops-dude/dotfiles.git
-yadm bootstrap
+git clone --bare git@github.com:stivce-devops-dude/dotfiles.git ~/.dotfiles
+git --git-dir=$HOME/.dotfiles --work-tree=$HOME checkout
 ```
 
-The bootstrap script automatically detects your OS and clones the appropriate OS-specific repo.
-
-## Branch / Setup Options
-
-| OS | Default | With Gaming |
-|----|---------|-------------|
-| **Arch Linux** | minimal (base only) | `DOTFILES_INCLUDE_GAMING=1` |
-| **Ubuntu** | main | - |
-| **macOS** | main | - |
+Add to your shell profile:
 
 ```bash
-# Arch Linux - minimal (no gaming)
-yadm bootstrap
-
-# Arch Linux - with gaming
-DOTFILES_INCLUDE_GAMING=1 yadm bootstrap
+alias dot='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
+dot config status.showUntrackedFiles no
 ```
 
-## What's Included
+## What's included
 
-- **Shell**: zsh config (`.zshrc`, `.config/zshrc.d/`)
-- **Terminal**: kitty config
-- **Editor**: neovim (`init.lua`)
-- **Prompt**: starship
-- **Package Lists**: `.config/yadm/packages/core.txt`
+- **Shell** — `.zshrc`, `.config/zshrc.d/` (env, keybindings, aliases, functions, starship, fzf)
+- **Terminal** — `.config/kitty/` (base config, colors)
+- **Editor** — `.config/nvim/init.lua`
+- **Prompt** — `.config/starship/starship.toml`
+- **Git** — `.gitconfig`
 
-## Bootstrap Scripts
-
-| Script | Description |
-|--------|-------------|
-| `.config/yadm/bootstrap` | Main bootstrap - detects OS and clones OS-specific repos |
-| `.config/yadm/bootstrap.d/common/40-home` | Creates home directories |
-| `.config/yadm/bootstrap.d/common/50-fzf` | Generates fzf zsh integration |
-
-## Adding New Configs
+## Usage
 
 ```bash
-yadm add ~/.config/foo/bar
-yadm commit -m "add foo config"
-yadm push
+dot add ~/.config/nvim/init.lua
+dot commit -m "update nvim config"
+dot push
 ```
+
+## Related repos
+
+- [dotfiles-arch](https://github.com/stivce-devops-dude/dotfiles-arch) — Arch-specific configs (Hyprland, Waybar, GTK, Qt)
+- [dotfiles-mac](https://github.com/stivce-devops-dude/dotfiles-mac) — macOS-specific configs (Aerospace, SSH)
+- [os-configuration](https://github.com/stivce-devops-dude/os-configuration) — Ansible playbook for package management and system setup
